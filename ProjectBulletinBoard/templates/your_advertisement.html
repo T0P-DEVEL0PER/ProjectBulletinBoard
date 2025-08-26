@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ваше объявление</title>
+</head>
+<body>
+    <button><a href="http://127.0.0.1:8000/your_advertisements/">Ваши объявления</a></button>
+    <h1>Ваше объявление</h1>
+    <table>
+        <tr>
+            <td>Заголовок</td>
+            <td>Категория</td>
+            <td>Контент</td>
+            <td>Дата создания</td>
+            <td>Дата изменения</td>
+        </tr>
+        <tr>
+            <td>{{ your_advertisement.title }}</td>
+            <td>{{ your_advertisement.category.name }}</td>
+            <td>{{ your_advertisement.content }}</td>
+            <td>{{ your_advertisement.create_datetime|date:"d.m.Y H:i" }}</td>
+            <td>{{ your_advertisement.last_change_datetime|date:"d.m.Y H:i" }}</td>
+            <td><button><a href="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/update/">Изменить</a></button></td>
+            <td><button><a href="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/delete/">Удалить</a></button></td>
+        </tr>
+    </table>
+</body>

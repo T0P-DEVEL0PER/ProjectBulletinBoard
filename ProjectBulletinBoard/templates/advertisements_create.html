@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание объявления</title>
+</head>
+<body>
+    <h1>Создание объявления</h1>
+    <form action="http://127.0.0.1:8000/advertisements/create/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="title">Заголовок</label>
+        <input type="text" name="title" required><br>
+        <label for="category_name">Категория</label>
+        <select id="category_name" name="category_name" required>
+            {% for category in categories %}
+            <option value="{{ category.name }}">{{ category.name }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="content">Контент</label>
+        <input type="text" name="content" required><br>
+        <input type="submit" value="Выложить"><br>
+    </form>
+</body>
+</html>

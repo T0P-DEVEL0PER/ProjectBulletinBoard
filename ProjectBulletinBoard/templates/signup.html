@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+</head>
+<body>
+    <h1>Регистрация</h1>
+    <form action="http://127.0.0.1:8000/signup/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="username">Имя пользователя</label>
+        <input type="text" name="username" required><br>
+        <label for="email">Электронная почта</label>
+        <input type="text" name="email" required><br>
+        <label for="password">Пароль</label>
+        <input type="text" name="password" required><br>
+        <label for="password2">Подтверждение пароля</label>
+        <input type="text" name="password2" required><br>
+        <input type="submit" value="Зарегистрироваться и перейти к получению кода"><br>
+    </form>
+    <p>Вам потребуется подтвердить регистрацию. Для это нужно получение одноразового кода на почту.</p>
+</body>
+</html>

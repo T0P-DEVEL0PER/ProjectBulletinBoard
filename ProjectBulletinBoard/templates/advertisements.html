@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объявления</title>
+</head>
+<body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
+    <h1>Объявления</h1>
+    {% if advertisements %}
+    <table>
+        <tr>
+            <td>Заголовок</td>
+            <td>Категория</td>
+            <td>Контент</td>
+            <td>Дата создания</td>
+            <td>Дата изменения</td>
+            <td>Создатель</td>
+        </tr>
+        {% for advertisement in advertisements %}
+        <tr>
+            <td>{{ advertisement.title }}</td>
+            <td>{{ advertisement.category.name }}</td>
+            <td>{{ advertisement.content|truncatewords:20 }}</td>
+            <td>{{ advertisement.create_datetime }}</td>
+            <td>{{ advertisement.last_change_datetime }}</td>
+            <td>{{ advertisement.user.username }}</td>
+            <td><button><a href="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/">Детальный просмотр</a></button></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <h2>Объявлений нет.</h2>
+    {% endif %}
+</body>
+</html>

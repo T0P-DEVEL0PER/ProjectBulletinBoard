@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение регистрации</title>
+</head>
+<body>
+    <h1>Подтверждение регистрации</h1>
+    <form action="http://127.0.0.1:8000/confirm_registration/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="username">Имя пользователя</label>
+        <input type="text" name="username" required><br>
+        <label for="one_time_code">Одноразовый код</label>
+        <input type="text" name="one_time_code" required><br>
+        <input type="submit" value="Подтвердить регистрацию"><br>
+    </form>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Первый этап входа (по паролю)</title>
+</head>
+<body>
+    <h1>Первый этап входа (по паролю)</h1>
+    <form action="http://127.0.0.1:8000/usual_login/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="username">Имя пользователя</label>
+        <input type="text" name="username" required><br>
+        <label for="password">Пароль</label>
+        <input type="text" name="password" required><br>
+        <input type="submit" value="Перейти на второй этап входа (по одноразовому коду)"><br>
+    </form>
+    <p>Одноразовый код придёт на почту.</p>
+</body>
+</html>
