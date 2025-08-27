@@ -312,10 +312,13 @@ class YourRepliesUpdateView(View):
         return render(request, 'your_replies_update.html', context)
 
     def post(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
         text = request.POST['text']
-        reply = Reply.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
+        reply = Reply.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()])))
         reply.text = text
         reply.save()
+        advertisement = Advertisement.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
         return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/replies/{reply.pk}/')
 
 
@@ -330,10 +333,32 @@ class YourRepliesDeleteView(View):
         return render(request, 'your_replies_delete.html', context)
 
     def post(self, request, *args, **kwargs):
-        reply = Reply.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
+        reply = Reply.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()])))
         reply.delete()
-        advertisement = Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
+        advertisement = Advertisement.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
         return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/replies/')
+
+
+class RepliesAcceptView(View):
+    def get(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
+        context = {
+            'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()]))),
+            'reply': Reply.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
+        }
+        return render(request, 'replies_accept.html', context)
+
+    def post(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
+        reply = Reply.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()])))
+        reply.is_accepted = True
+        reply.save()
+        advertisement = Advertisement.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
+        return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/replies/{reply.pk}/')
 
 
 class SignupErrorView(View):

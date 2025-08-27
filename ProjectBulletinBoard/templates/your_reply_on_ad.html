@@ -18,11 +18,13 @@
         </tr>
         <tr>
             <td>{{ reply.advertisement.title }}</td>
-            <td>{{ reply.text|truncatewords:20 }}</td>
+            <td>{{ reply.text }}</td>
             <td>{{ reply.is_accepted }}</td>
             <td>{{ reply.create_datetime }}</td>
             <td>{{ reply.last_change_datetime }}</td>
         </tr>
+        <td><button><a href="http://127.0.0.1:8000/advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}/update/">Изменить</a></button></td>
+        <td><button><a href="http://127.0.0.1:8000/advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}/delete/">Удалить</a></button></td>
     </table>
 </body>
 </html>

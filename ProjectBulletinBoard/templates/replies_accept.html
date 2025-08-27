@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Принятие отклика</title>
+</head>
+<body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
+    <h1>Принятие отклика</h1>
+    <form action="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/your_replies/{{ reply.pk }}/accept/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="submit" value="Принять"><br>
+    </form>
+</body>
+</html>

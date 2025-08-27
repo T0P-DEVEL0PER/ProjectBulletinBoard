@@ -8,7 +8,7 @@
 <body>
     <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
     <h1>Удаление отклика</h1>
-    <form action="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/your_replies/{{ reply.pk }}delete/" method="POST" enctype="multipart/form-data">
+    <form action="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/your_replies/{{ reply.pk }}/delete/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="submit" value="Удалить"><br>
     </form>
