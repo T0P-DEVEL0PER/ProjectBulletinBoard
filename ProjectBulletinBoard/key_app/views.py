@@ -198,17 +198,21 @@ class RepliesOnAdView(View):
     def get(self, request, *args, **kwargs):
         context = {
             'replies': Reply.objects.filter(
-                advertisement__pk=int(''.join([i for i in request.path if i.isdigit()]))).order_by('-create_datetime')
+                advertisement__pk=int(''.join([i for i in request.path if i.isdigit()]))).order_by('-create_datetime'),
+            'reply1': Reply.objects.get(
+                advertisement__pk=int(''.join([i for i in request.path if i.isdigit()]))).order_by('-create_datetime')[0]
         }
         return render(request, 'replies_on_ad.html', context)
 
 
 class ReplyOnAdView(View):
     def get(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
         context = {
-            'replies': Reply.objects.filter(pk=int(''.join([i for i in request.path if i.isdigit()])),
+            'reply': Reply.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()])),
                                             advertisement__pk=int(
-                                                ''.join([i for i in request.path if i.isdigit()]))).order_by(
+                                                ''.join([i for i in with_first_pk if i.isdigit()]))).order_by(
                 '-create_datetime')
         }
         return render(request, 'reply_on_ad.html', context)
@@ -228,6 +232,10 @@ class YourRepliesOnAdView(View):
             'replies': Reply.objects.filter(user=request.user,
                                             advertisement__pk=int(
                                                 ''.join([i for i in request.path if i.isdigit()]))).order_by(
+                '-create_datetime'),
+            'reply1': Reply.objects.get(user=request.user,
+                                            advertisement__pk=int(
+                                                ''.join([i for i in request.path if i.isdigit()]))).order_by(
                 '-create_datetime')
         }
         return render(request, 'your_replies_on_ad.html', context)
@@ -235,11 +243,13 @@ class YourRepliesOnAdView(View):
 
 class YourReplyOnAdView(View):
     def get(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
         context = {
-            'replies': Reply.objects.filter(user=request.user,
-                                            pk=int(''.join([i for i in request.path if i.isdigit()])),
+            'reply': Reply.objects.get(user=request.user,
+                                            pk=int(''.join([i for i in with_second_pk if i.isdigit()])),
                                             advertisement__pk=int(
-                                                ''.join([i for i in request.path if i.isdigit()]))).order_by(
+                                                ''.join([i for i in with_first_pk if i.isdigit()]))).order_by(
                 '-create_datetime')
         }
         return render(request, 'your_reply_on_ad.html', context)
@@ -257,6 +267,8 @@ class RepliesOnYourAdView(View):
     def get(self, request, *args, **kwargs):
         context = {
             'replies': Reply.objects.filter(advertisement__pk=int(''.join([i for i in request.path if i.isdigit()])),
+                                            advertisement__user=request.user).order_by('-create_datetime'),
+            'reply1': Reply.objects.get(advertisement__pk=int(''.join([i for i in request.path if i.isdigit()])),
                                             advertisement__user=request.user).order_by('-create_datetime')
         }
         return render(request, 'replies_on_your_ad.html', context)
@@ -264,9 +276,11 @@ class RepliesOnYourAdView(View):
 
 class ReplyOnYourAdView(View):
     def get(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
         context = {
-            'replies': Reply.objects.filter(pk=int(''.join([i for i in request.path if i.isdigit()])),
-                                            advertisement__pk=int(''.join([i for i in request.path if i.isdigit()])),
+            'reply': Reply.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()])),
+                                            advertisement__pk=int(''.join([i for i in with_first_pk if i.isdigit()])),
                                             advertisement__user=request.user).order_by('-create_datetime')
         }
         return render(request, 'reply_on_your_ad.html', context)
@@ -274,7 +288,10 @@ class ReplyOnYourAdView(View):
 
 class RepliesCreateView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'replies_create.html', {})
+        context = {
+            'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
+        }
+        return render(request, 'replies_create.html', context)
 
     def post(self, request, *args, **kwargs):
         advertisement = Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
@@ -286,8 +303,11 @@ class RepliesCreateView(View):
 
 class YourRepliesUpdateView(View):
     def get(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
         context = {
-            'reply': Reply.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
+            'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()]))),
+            'reply': Reply.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
         }
         return render(request, 'your_replies_update.html', context)
 
@@ -301,8 +321,11 @@ class YourRepliesUpdateView(View):
 
 class YourRepliesDeleteView(View):
     def get(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
         context = {
-            'reply': Reply.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
+            'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()]))),
+            'reply': Reply.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
         }
         return render(request, 'your_replies_delete.html', context)
 

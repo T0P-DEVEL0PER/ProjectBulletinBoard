@@ -6,6 +6,7 @@
     <title>Изменение объявления</title>
 </head>
 <body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
     <h1>Изменение объявления</h1>
     <form action="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/update/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}

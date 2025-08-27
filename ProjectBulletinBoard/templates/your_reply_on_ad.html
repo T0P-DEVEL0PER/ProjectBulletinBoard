@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отклик</title>
+</head>
+<body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
+    <h1>Ваш отклик на объявление {{ reply.advertisement.title }}</h1>
+    <table>
+        <tr>
+            <td>Объявление</td>
+            <td>Текст</td>
+            <td>Статус</td>
+            <td>Дата создания</td>
+            <td>Дата изменения</td>
+        </tr>
+        <tr>
+            <td>{{ reply.advertisement.title }}</td>
+            <td>{{ reply.text|truncatewords:20 }}</td>
+            <td>{{ reply.is_accepted }}</td>
+            <td>{{ reply.create_datetime }}</td>
+            <td>{{ reply.last_change_datetime }}</td>
+        </tr>
+    </table>
+</body>
+</html>

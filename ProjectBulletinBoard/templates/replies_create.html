@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание отклика</title>
+</head>
+<body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
+    <h1>Создание отклика</h1>
+    <form action="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/replies/create/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="text">Текст</label>
+        <input type="text" name="text" required><br>
+        <input type="submit" value="Откликнуться"><br>
+    </form>
+</body>
+</html>

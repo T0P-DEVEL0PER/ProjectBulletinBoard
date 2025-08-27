@@ -6,6 +6,7 @@
     <title>Получение одноразового кода</title>
 </head>
 <body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
     <h1>Получение одноразового кода для подтверждения регистрации на почту</h1>
     <form action="http://127.0.0.1:8000/get_code_for_confirm_registration/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отклики</title>
+</head>
+<body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
+    <h1>Отклики на объявление {{ reply1.advertisement.title }}</h1>
+    {% if replies %}
+    <table>
+        <tr>
+            <td>Объявление</td>
+            <td>Текст</td>
+            <td>Статус</td>
+            <td>Дата создания</td>
+            <td>Дата изменения</td>
+            <td>Откликнувшийся</td>
+        </tr>
+        {% for reply in replies %}
+        <tr>
+            <td>{{ reply.advertisement.title }}</td>
+            <td>{{ reply.text|truncatewords:20 }}</td>
+            <td>{{ reply.is_accepted }}</td>
+            <td>{{ reply.create_datetime }}</td>
+            <td>{{ reply.last_change_datetime }}</td>
+            <td>{{ reply.user.username }}</td>
+            <td><button><a href="http://127.0.0.1:8000/advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}">Детальный просмотр</a></button></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <h2>Откликов нет.</h2>
+    {% endif %}
+</body>
+</html>
