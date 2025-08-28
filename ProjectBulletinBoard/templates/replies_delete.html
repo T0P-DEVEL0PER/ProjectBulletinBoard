@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Удаление объявления</title>
+    <title>Удаление отклика</title>
 </head>
 <body>
     <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
-    <h1>Удаление объявления</h1>
-    <form action="http://127.0.0.1:8000/your_advertisements/{{ advertisement.pk }}/delete/" method="POST" enctype="multipart/form-data">
+    <h1>Удаление отклика</h1>
+    <form action="http://127.0.0.1:8000/your_advertisements/{{ advertisement.pk }}/replies/{{ reply.pk }}/delete/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="submit" value="Удалить"><br>
     </form>

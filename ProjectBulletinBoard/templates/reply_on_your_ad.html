@@ -25,6 +25,7 @@
             <td>{{ reply.last_change_datetime }}</td>
             <td>{{ reply.user.username }}</td>
             <td><button><a href="http://127.0.0.1:8000/your_advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}/accept/">Принять</a></button></td>
+            <td><button><a href="http://127.0.0.1:8000/your_advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}/delete/">Удалить</a></button></td>
         </tr>
     </table>
 </body>

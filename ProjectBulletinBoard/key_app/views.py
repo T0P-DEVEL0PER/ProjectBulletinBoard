@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.generic.edit import View
 from .models import *
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .filters import ReplyFilter
 
 
 class KeyPageView(View):
@@ -37,7 +39,7 @@ class GetCodeForConfirmRegistrationView(View):
         username = request.POST['username']
         password = request.POST['password']
         user = User.objects.filter(username=username, is_active=False)
-        if user.exists() and user[0].check_password(password) and not OneTimeCode.objects.filter(user=user).exists():
+        if user.exists() and user[0].check_password(password) and not OneTimeCode.objects.filter(user=user[0]).exists():
             OneTimeCode.objects.create(symbols=str(randint(100000, 999999)), user=user[0])
             return redirect('http://127.0.0.1:8000/confirm_registration/')
         else:
@@ -51,11 +53,12 @@ class ConfirmRegistrationView(View):
     def post(self, request, *args, **kwargs):
         username = request.POST['username']
         one_time_code = request.POST['one_time_code']
-        user = User.objects.filter(username=username, is_active=False)
-        if user.exists() and OneTimeCode.objects.filter(symbols=one_time_code, user=user[0]).exists():
+        user_qs = User.objects.filter(username=username, is_active=False)
+        user = user_qs[0]
+        if user_qs.exists() and OneTimeCode.objects.filter(symbols=one_time_code, user=user).exists():
             user.is_active = True
             user.save()
-            code = OneTimeCode.objects.get(symbols=one_time_code, user=user[0])
+            code = OneTimeCode.objects.get(symbols=one_time_code, user=user)
             code.delete()
             return redirect('http://127.0.0.1:8000/usual_login/')
         else:
@@ -93,7 +96,7 @@ class LoginWithCodeView(View):
             return redirect('http://127.0.0.1:8000/login_with_code_error/')
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, 'logout.html', {})
 
@@ -102,36 +105,36 @@ class LogoutView(View):
         return redirect('http://127.0.0.1:8000/')
 
 
-class AdvertisementsCreateView(View):
+class AdvertisementsCreateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
-            'categories': Category.objects.all()
+            'categories': Category.objects.all(),
         }
         return render(request, 'advertisements_create.html', context)
 
     def post(self, request, *args, **kwargs):
         title = request.POST['title']
-        category_name = request.POST['category_name']
+        category = request.POST['category']
         content = request.POST['content']
         user = request.user
-        category = Category.objects.get(name=category_name)
+        category = Category.objects.get(pk=category)
         advertisement = Advertisement.objects.create(title=title, category=category, content=content, user=user)
         return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/')
 
 
-class YourAdvertisementsUpdateView(View):
+class YourAdvertisementsUpdateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'categories': Category.objects.all(),
-            'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
+            'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()]))),
         }
         return render(request, 'your_advertisements_update.html', context)
 
     def post(self, request, *args, **kwargs):
         title = request.POST['title']
-        category_name = request.POST['category_name']
+        category = request.POST['category']
         content = request.POST['content']
-        category = Category.objects.get(name=category_name)
+        category = Category.objects.get(pk=category)
         advertisement = Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
         advertisement.title = title
         advertisement.category = category
@@ -140,7 +143,7 @@ class YourAdvertisementsUpdateView(View):
         return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/')
 
 
-class YourAdvertisementsDeleteView(View):
+class YourAdvertisementsDeleteView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
@@ -169,7 +172,7 @@ class AdvertisementDetailView(View):
         return render(request, 'advertisement.html', context)
 
 
-class YourAdvertisementsListView(View):
+class YourAdvertisementsListView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'advertisements': Advertisement.objects.filter(user=request.user).order_by('-create_datetime')
@@ -177,7 +180,7 @@ class YourAdvertisementsListView(View):
         return render(request, 'your_advertisements.html', context)
 
 
-class YourAdvertisementDetailView(View):
+class YourAdvertisementDetailView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'advertisement': Advertisement.objects.get(user=request.user,
@@ -189,7 +192,7 @@ class YourAdvertisementDetailView(View):
 class RepliesOnAdsView(View):
     def get(self, request, *args, **kwargs):
         context = {
-            'replies': Reply.objects.all().order_by('-create_datetime')
+            'replies': Reply.objects.all().order_by('-create_datetime'),
         }
         return render(request, 'replies_on_ads.html', context)
 
@@ -200,7 +203,7 @@ class RepliesOnAdView(View):
             'replies': Reply.objects.filter(
                 advertisement__pk=int(''.join([i for i in request.path if i.isdigit()]))).order_by('-create_datetime'),
             'reply1': Reply.objects.get(
-                advertisement__pk=int(''.join([i for i in request.path if i.isdigit()]))).order_by('-create_datetime')[0]
+                advertisement__pk=int(''.join([i for i in request.path if i.isdigit()]))).order_by('-create_datetime')
         }
         return render(request, 'replies_on_ad.html', context)
 
@@ -218,7 +221,7 @@ class ReplyOnAdView(View):
         return render(request, 'reply_on_ad.html', context)
 
 
-class YourRepliesOnAdsView(View):
+class YourRepliesOnAdsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'replies': Reply.objects.filter(user=request.user).order_by('-create_datetime')
@@ -226,7 +229,7 @@ class YourRepliesOnAdsView(View):
         return render(request, 'your_replies_on_ads.html', context)
 
 
-class YourRepliesOnAdView(View):
+class YourRepliesOnAdView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'replies': Reply.objects.filter(user=request.user,
@@ -241,7 +244,7 @@ class YourRepliesOnAdView(View):
         return render(request, 'your_replies_on_ad.html', context)
 
 
-class YourReplyOnAdView(View):
+class YourReplyOnAdView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         with_first_pk = request.path.split('/replies/')[0]
         with_second_pk = request.path.split('/replies/')[1]
@@ -255,15 +258,16 @@ class YourReplyOnAdView(View):
         return render(request, 'your_reply_on_ad.html', context)
 
 
-class RepliesOnYourAdsView(View):
+class RepliesOnYourAdsView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
-            'replies': Reply.objects.filter(advertisement__user=request.user).order_by('-create_datetime')
+            'replies': Reply.objects.filter(advertisement__user=request.user).order_by('-create_datetime'),
+            'filter': ReplyFilter(request.GET, queryset=Reply.objects.filter(advertisement__user=request.user))
         }
         return render(request, 'replies_on_your_ads.html', context)
 
 
-class RepliesOnYourAdView(View):
+class RepliesOnYourAdView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'replies': Reply.objects.filter(advertisement__pk=int(''.join([i for i in request.path if i.isdigit()])),
@@ -274,7 +278,7 @@ class RepliesOnYourAdView(View):
         return render(request, 'replies_on_your_ad.html', context)
 
 
-class ReplyOnYourAdView(View):
+class ReplyOnYourAdView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         with_first_pk = request.path.split('/replies/')[0]
         with_second_pk = request.path.split('/replies/')[1]
@@ -286,7 +290,7 @@ class ReplyOnYourAdView(View):
         return render(request, 'reply_on_your_ad.html', context)
 
 
-class RepliesCreateView(View):
+class RepliesCreateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         context = {
             'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in request.path if i.isdigit()])))
@@ -301,7 +305,7 @@ class RepliesCreateView(View):
         return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/replies/{reply.pk}/')
 
 
-class YourRepliesUpdateView(View):
+class YourRepliesUpdateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         with_first_pk = request.path.split('/replies/')[0]
         with_second_pk = request.path.split('/replies/')[1]
@@ -322,7 +326,7 @@ class YourRepliesUpdateView(View):
         return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/replies/{reply.pk}/')
 
 
-class YourRepliesDeleteView(View):
+class YourRepliesDeleteView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         with_first_pk = request.path.split('/replies/')[0]
         with_second_pk = request.path.split('/replies/')[1]
@@ -341,7 +345,7 @@ class YourRepliesDeleteView(View):
         return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/replies/')
 
 
-class RepliesAcceptView(View):
+class RepliesAcceptView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         with_first_pk = request.path.split('/replies/')[0]
         with_second_pk = request.path.split('/replies/')[1]
@@ -358,7 +362,26 @@ class RepliesAcceptView(View):
         reply.is_accepted = True
         reply.save()
         advertisement = Advertisement.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
-        return redirect(f'http://127.0.0.1:8000/advertisements/{advertisement.pk}/replies/{reply.pk}/')
+        return redirect(f'http://127.0.0.1:8000/your_advertisements/{advertisement.pk}/replies/{reply.pk}/')
+
+
+class RepliesDeleteView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
+        context = {
+            'advertisement': Advertisement.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()]))),
+            'reply': Reply.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
+        }
+        return render(request, 'replies_delete.html', context)
+
+    def post(self, request, *args, **kwargs):
+        with_first_pk = request.path.split('/replies/')[0]
+        with_second_pk = request.path.split('/replies/')[1]
+        reply = Reply.objects.get(pk=int(''.join([i for i in with_second_pk if i.isdigit()])))
+        reply.delete()
+        advertisement = Advertisement.objects.get(pk=int(''.join([i for i in with_first_pk if i.isdigit()])))
+        return redirect(f'http://127.0.0.1:8000/your_advertisements/{advertisement.pk}/replies/')
 
 
 class SignupErrorView(View):
