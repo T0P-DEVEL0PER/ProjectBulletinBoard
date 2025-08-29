@@ -20,7 +20,11 @@
         <tr>
             <td>{{ reply.advertisement.title }}</td>
             <td>{{ reply.text }}</td>
-            <td>{{ reply.is_accepted }}</td>
+            {% if reply.is_accepted %}
+            <td>Принят</td>
+            {% else %}
+            <td>Не принят</td>
+            {% endif %}
             <td>{{ reply.create_datetime }}</td>
             <td>{{ reply.last_change_datetime }}</td>
             <td>{{ reply.user.username }}</td>

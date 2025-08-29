@@ -8,7 +8,13 @@
 <body>
     <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
     <h1>Отклики на Ваши объявления</h1>
-    {% if replies %}
+    <p>Фильтрация откликов</p>
+    <form method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" value="Найти"/>
+    </form>
+    <button><a href="http://127.0.0.1:8000/your_advertisements/replies/">Сбросить фильтр</a></button>
+    {% if filter.qs %}
     <table>
         <tr>
             <td>Объявление</td>
@@ -18,51 +24,26 @@
             <td>Дата изменения</td>
             <td>Откликнувшийся</td>
         </tr>
-        {% for reply in replies %}
+        {% for reply in filter.qs %}
         <tr>
             <td>{{ reply.advertisement.title }}</td>
             <td>{{ reply.text|truncatewords:20 }}</td>
-            <td>{{ reply.is_accepted }}</td>
+            {% if reply.is_accepted %}
+            <td>Принят</td>
+            {% else %}
+            <td>Не принят</td>
+            {% endif %}
             <td>{{ reply.create_datetime }}</td>
             <td>{{ reply.last_change_datetime }}</td>
             <td>{{ reply.user.username }}</td>
-            <td><button><a href="http://127.0.0.1:8000/your_advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}">Детальный просмотр</a></button></td>
+            <td>
+                <button><a href="http://127.0.0.1:8000/your_advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}">Детальный просмотр</a></button>
+            </td>
         </tr>
         {% endfor %}
     </table>
     {% else %}
     <h2>Откликов нет.</h2>
     {% endif %}
-<form method="get">
-    {{ filter.form.as_p }}
-    <input type="submit" value="Найти"/>
-</form>
-{% if filter.qs %}
-<table>
-    <tr>
-        <td>Объявление</td>
-        <td>Текст</td>
-        <td>Статус</td>
-        <td>Дата создания</td>
-        <td>Дата изменения</td>
-        <td>Откликнувшийся</td>
-    </tr>
-    {% for reply in replies %}
-    <tr>
-        <td>{{ reply.advertisement.title }}</td>
-        <td>{{ reply.text|truncatewords:20 }}</td>
-        <td>{{ reply.is_accepted }}</td>
-        <td>{{ reply.create_datetime }}</td>
-        <td>{{ reply.last_change_datetime }}</td>
-        <td>{{ reply.user.username }}</td>
-        <td>
-            <button><a href="http://127.0.0.1:8000/your_advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}">Детальный просмотр</a></button>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<h2>Откликов нет.</h2>
-{% endif %}
 </body>
 </html>

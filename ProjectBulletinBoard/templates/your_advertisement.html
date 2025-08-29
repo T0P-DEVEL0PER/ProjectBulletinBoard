@@ -19,9 +19,11 @@
         <tr>
             <td>{{ advertisement.title }}</td>
             <td>{{ advertisement.category.name }}</td>
-            <td>{{ advertisement.content }}</td>
+            <td>{{ advertisement.content|safe }}</td>
             <td>{{ advertisement.create_datetime|date:"d.m.Y H:i" }}</td>
             <td>{{ advertisement.last_change_datetime|date:"d.m.Y H:i" }}</td>
+            <td><button><a href="http://127.0.0.1:8000/your_advertisements/{{ advertisement.pk }}/replies/">Отклики</a></button></td>
+            <td><button><a href="http://127.0.0.1:8000/advertisements/{{ advertisement.pk }}/replies/create/">Откликнуться</a></button></td>
             <td><button><a href="http://127.0.0.1:8000/your_advertisements/{{ advertisement.pk }}/update/">Изменить</a></button></td>
             <td><button><a href="http://127.0.0.1:8000/your_advertisements/{{ advertisement.pk }}/delete/">Удалить</a></button></td>
         </tr>

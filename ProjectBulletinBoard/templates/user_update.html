@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменение профиля</title>
+</head>
+<body>
+    <button><a href="http://127.0.0.1:8000/">Главная страница</a></button>
+    <h1>Изменение профиля</h1>
+    <form action="http://127.0.0.1:8000/user_update/" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="old_username">Старое имя пользователя</label>
+        <input type="text" name="old_username" required><br>
+        <label for="old_password">Старый пароль</label>
+        <input type="text" name="old_password" required><br>
+        <label for="new_username">Новое имя пользователя</label>
+        <input type="text" name="new_username" required><br>
+        <label for="new_email">Новая электронная почта</label>
+        <input type="text" name="new_email" required><br>
+        <label for="new_password">Новый пароль</label>
+        <input type="text" name="new_password" required><br>
+        <label for="new_password2">Подтверждение нового пароля</label>
+        <input type="text" name="new_password2" required><br>
+        <input type="submit" value="Изменить профиль"><br>
+    </form>
+</body>
+</html>

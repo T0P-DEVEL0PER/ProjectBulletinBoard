@@ -10,21 +10,8 @@
     <h1>Изменение объявления</h1>
     <form action="http://127.0.0.1:8000/your_advertisements/{{ advertisement.pk }}/update/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <label for="title">Заголовок</label>
-        <input type="text" name="title" value="{{ advertisement.title }}" required><br>
-        <label for="category_name">Категория</label>
-        <select id="category_name" name="category_name" required>
-            {% for category in categories %}
-            {% if category == advertisement.category %}
-            <option value="{{ category.name }}" selected>{{ category.name }}</option>
-            {% else %}
-            <option value="{{ category.name }}">{{ category.name }}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
-        <br><br>
-        <label for="content">Контент</label>
-        <input type="text" name="content" value="{{ advertisement.content }}" required><br>
+        {{ form.media }}
+        {{ form.as_p }}
         <input type="submit" value="Изменить"><br>
     </form>
 </body>

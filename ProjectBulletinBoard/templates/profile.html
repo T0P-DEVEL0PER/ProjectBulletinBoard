@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+</head>
+<body>
+    <h1>Профиль</h1>
+    <h2>Имя пользователя: {{ user.username }}</h2>
+    <h2>Электронная почта: {{ user.email }}</h2>
+    {% if user.is_active %}
+    <h2>Cтатус профиля: активирован</h2>
+    {% else %}
+    <h2>Cтатус профиля: не активирован</h2>
+    {% endif %}
+    <button><a href="http://127.0.0.1:8000/user_update/">Изменение профиля</a></button><br>
+    <button><a href="http://127.0.0.1:8000/user_delete/">Удаление профиля</a></button><br>
+</body>
+</html>

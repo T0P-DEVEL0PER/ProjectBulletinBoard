@@ -19,12 +19,16 @@
         <tr>
             <td>{{ reply.advertisement.title }}</td>
             <td>{{ reply.text }}</td>
-            <td>{{ reply.is_accepted }}</td>
+            {% if reply.is_accepted %}
+            <td>Принят</td>
+            {% else %}
+            <td>Не принят</td>
+            {% endif %}
             <td>{{ reply.create_datetime }}</td>
             <td>{{ reply.last_change_datetime }}</td>
+            <td><button><a href="http://127.0.0.1:8000/advertisements/{{ reply.advertisement.pk }}/your_replies/{{ reply.pk }}/update/">Изменить</a></button></td>
+            <td><button><a href="http://127.0.0.1:8000/advertisements/{{ reply.advertisement.pk }}/your_replies/{{ reply.pk }}/delete/">Удалить</a></button></td>
         </tr>
-        <td><button><a href="http://127.0.0.1:8000/advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}/update/">Изменить</a></button></td>
-        <td><button><a href="http://127.0.0.1:8000/advertisements/{{ reply.advertisement.pk }}/replies/{{ reply.pk }}/delete/">Удалить</a></button></td>
     </table>
 </body>
 </html>

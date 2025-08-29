@@ -9,6 +9,9 @@ urlpatterns = [
     path('usual_login/', UsualLoginView.as_view()),
     path('login_with_code/', LoginWithCodeView.as_view()),
     path('logout/', LogoutView.as_view()),
+    path('profile/', ProfileView.as_view()),
+    path('user_update/', UserUpdateView.as_view()),
+    path('user_delete/', UserDeleteView.as_view()),
     path('advertisements/', AdvertisementsListView.as_view()),
     path('advertisements/<int:pk1>/', AdvertisementDetailView.as_view()),
     path('advertisements/create/', AdvertisementsCreateView.as_view()),
@@ -35,4 +38,6 @@ urlpatterns = [
     path('confirm_registration_error/', ConfirmRegistrationErrorView.as_view()),
     path('usual_login_error/', UsualLoginErrorView.as_view()),
     path('login_with_code_error/', LoginWithCodeErrorView.as_view()),
+    path('user_update_error/', SignupErrorView.as_view()),
+    path('user_delete_error/', SignupErrorView.as_view()),
 ]

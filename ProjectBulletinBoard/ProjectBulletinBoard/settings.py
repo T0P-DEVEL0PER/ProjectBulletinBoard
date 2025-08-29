@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'key_app.apps.KeyAppConfig',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,6 @@ CELERY_RESULT_SERIALIZER = 'json'
 
 LOGIN_URL = 'http://127.0.0.1:8000/usual_login/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+CKEDITOR_UPLOAD_PATH = 'content/ckeditor/'
